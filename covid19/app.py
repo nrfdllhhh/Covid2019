@@ -1,4 +1,4 @@
-# owi.py  |  Visualisasi Interaktif Data COVID-19 Indonesia (Ukuran Grafik Disesuaikan)
+#Visualisasi Interaktif Data COVID-19 Indonesia (Ukuran Grafik Disesuaikan)
 # ---------------------------------------------------------------------
 import streamlit as st
 import pandas as pd
