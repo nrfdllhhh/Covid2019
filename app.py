@@ -1,5 +1,3 @@
-# owi.py  |  Visualisasi Interaktif Data COVID-19 Indonesia (Ukuran Grafik Disesuaikan)
-# ---------------------------------------------------------------------
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -7,7 +5,7 @@ import seaborn as sns
 import matplotlib.dates as mdates
 from pathlib import Path
 
-# ---------------- CONFIG DASAR ----------------
+# CONFIG DASAR 
 st.set_page_config(page_title="Visualisasi Data COVID-19", layout="wide")
 st.markdown(
     """
@@ -30,7 +28,7 @@ plt.rcParams.update({
     "legend.fontsize": 7
 })
 
-# ---------------- LOAD DATA ----------------
+# LOAD DATA 
 @st.cache_data
 def load_data():
     fp = Path("covid_19_indonesia_clean.csv")
@@ -49,7 +47,7 @@ st.title("🦠 Visualisasi Data COVID-19 Indonesia per Provinsi")
 if "Province" not in df.columns:
     st.stop("❌ Kolom 'Province' tidak ada di dataset.")
 
-# ---------------- SIDEBAR ----------------
+# SIDEBAR 
 provinsi_list = sorted(df["Province"].dropna().unique())
 provinces = st.sidebar.multiselect("Pilih provinsi:", provinsi_list, default=provinsi_list[:3])
 
@@ -61,12 +59,12 @@ end_date = st.sidebar.date_input("Sampai tanggal", value=max_date, min_value=min
 if start_date > end_date:
     st.sidebar.error("❌ 'Dari tanggal' tidak boleh melebihi 'Sampai tanggal'.")
 
-# ---------------- FILTER DATA ----------------
+# FILTER DATA 
 mask_tgl = (df["Date"].dt.date >= start_date) & (df["Date"].dt.date <= end_date)
 mask_prov = df["Province"].isin(provinces)
 filtered_df = df[mask_tgl & mask_prov]
 
-# ---------------- GRAFIK ----------------
+# GRAFIK 
 show_all = st.checkbox("📑 Tampilkan Grafik Gabungan", value=True)
 
 if show_all:
@@ -149,7 +147,7 @@ if show_all:
             sns.heatmap(corr_df.corr(), annot=True, cmap="YlGnBu", linewidths=0.5, ax=ax)
             st.pyplot(fig, clear_figure=True)
 
-# ---------------- TABEL DATA ----------------
+# TABEL DATA 
 with st.expander("📋 Data Tabel Kasus Harian per Provinsi"):
     if not filtered_df.empty:
         tab_titles = [prov for prov in provinces]
@@ -162,5 +160,5 @@ with st.expander("📋 Data Tabel Kasus Harian per Provinsi"):
                            .sort_values("Date").reset_index(drop=True))
                 st.dataframe(show_df, use_container_width=True)
 
-# ---------------- FOOTER ----------------
+# FOOTER
 st.markdown("📌 *Sumber data:* `covid_19_indonesia_clean.csv`")
